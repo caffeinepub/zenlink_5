@@ -1,0 +1,105 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-update-the-authenticated-landingpage-begin-your-journey-action-so-it-routes-to-the-onboarding-flow-starting-with-profile-setup-name-avatar-perspectives-interests-rather-than-directly-to-the-mbti-quiz",
+      "featureTitle": "Update the authenticated LandingPage \"Begin Your Journey\" action so it routes to the onboarding flow starting with profile setup (name, avatar, perspectives, interests) rather than directly to the MBTI quiz.",
+      "files": [
+        "frontend/src/pages/LandingPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-after-the-profile-setup-step-completes-saving-name-avatar-perspectives-interests-insert-an-mbti-decision-step-that-asks-whether-the-user-already-knows-their-mbti-type-or-wants-to-take-the-mbti-test-only-show-the-mbti-quiz-questions-if-the-user-chooses-to-take-the-test",
+      "featureTitle": "After the profile setup step completes (saving name/avatar/perspectives/interests), insert an MBTI decision step that asks whether the user already knows their MBTI type or wants to take the MBTI test; only show the MBTI quiz questions if the user chooses to take the test.",
+      "files": [
+        "frontend/src/pages/MbtiQuizPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-mbti-step-completes-the-onboarding-flow-by-automatically-navigating-to-the-home-screen-after-the-user-finishes-the-mbti-step-either-by-saving-a-known-mbti-type-saving-a-computed-quiz-result-or-skipping-saving-without-requiring-an-extra-continue-on-a-separate-screen",
+      "featureTitle": "Ensure the MBTI step completes the onboarding flow by automatically navigating to the Home screen after the user finishes the MBTI step (either by saving a known MBTI type, saving a computed quiz result, or skipping saving), without requiring an extra \"Continue\" on a separate screen.",
+      "files": [
+        "frontend/src/pages/MbtiQuizPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-the-home-screen-to-prominently-show-the-current-user-s-avatar-and-profile-at-minimum-avatar-display-name-centered-in-the-middle-of-the-home-screen",
+      "featureTitle": "Update the Home screen to prominently show the current user’s avatar and profile (at minimum: avatar + display name) centered in the middle of the Home screen.",
+      "files": [
+        "frontend/src/pages/HomePage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-home-screen-provides-navigation-access-to-every-main-option-section-available-in-the-app-routes-not-just-a-subset-so-users-can-reach-each-feature-from-home",
+      "featureTitle": "Ensure the Home screen provides navigation access to every main option/section available in the app routes (not just a subset), so users can reach each feature from Home.",
+      "files": [
+        "frontend/src/pages/HomePage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "blob-storage@4.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

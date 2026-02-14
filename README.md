@@ -1,2 +1,3 @@
-# zenlink_5
-Exported from Caffeine project: Fix onboarding flow: MBTI known-vs-test step, auto-redirect to Home, and center profile on Home with all options
+## 
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

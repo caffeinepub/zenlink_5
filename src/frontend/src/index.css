@@ -1,0 +1,217 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --radius: 1.5rem;
+        --background: 0.98 0.02 280;
+        --foreground: 0.25 0.03 280;
+        --card: 0.99 0.01 280;
+        --card-foreground: 0.25 0.03 280;
+        --popover: 0.99 0.01 280;
+        --popover-foreground: 0.25 0.03 280;
+        --primary: 0.65 0.15 280;
+        --primary-foreground: 0.99 0.01 280;
+        --secondary: 0.75 0.12 200;
+        --secondary-foreground: 0.99 0.01 280;
+        --muted: 0.95 0.02 280;
+        --muted-foreground: 0.55 0.03 280;
+        --accent: 0.85 0.10 320;
+        --accent-foreground: 0.25 0.03 280;
+        --destructive: 0.60 0.20 20;
+        --destructive-foreground: 0.99 0.01 280;
+        --border: 0.90 0.02 280;
+        --input: 0.92 0.02 280;
+        --ring: 0.65 0.15 280;
+        --chart-1: 0.70 0.15 280;
+        --chart-2: 0.75 0.12 200;
+        --chart-3: 0.80 0.10 340;
+        --chart-4: 0.85 0.08 30;
+        --chart-5: 0.75 0.10 160;
+        --sidebar: 0.98 0.02 280;
+        --sidebar-foreground: 0.25 0.03 280;
+        --sidebar-primary: 0.65 0.15 280;
+        --sidebar-primary-foreground: 0.99 0.01 280;
+        --sidebar-accent: 0.95 0.02 280;
+        --sidebar-accent-foreground: 0.25 0.03 280;
+        --sidebar-border: 0.90 0.02 280;
+        --sidebar-ring: 0.65 0.15 280;
+        
+        /* ZenLink custom colors */
+        --zen-lavender: 0.80 0.12 290;
+        --zen-sky: 0.85 0.08 200;
+        --zen-blush: 0.82 0.10 340;
+        --zen-peach: 0.88 0.08 40;
+        --zen-glow: 0.70 0.18 280;
+    }
+
+    .dark {
+        --background: 0.18 0.03 280;
+        --foreground: 0.95 0.02 280;
+        --card: 0.22 0.03 280;
+        --card-foreground: 0.95 0.02 280;
+        --popover: 0.20 0.03 280;
+        --popover-foreground: 0.95 0.02 280;
+        --primary: 0.75 0.12 280;
+        --primary-foreground: 0.18 0.03 280;
+        --secondary: 0.30 0.04 280;
+        --secondary-foreground: 0.95 0.02 280;
+        --muted: 0.28 0.03 280;
+        --muted-foreground: 0.65 0.03 280;
+        --accent: 0.40 0.05 280;
+        --accent-foreground: 0.95 0.02 280;
+        --destructive: 0.55 0.18 20;
+        --destructive-foreground: 0.95 0.02 280;
+        --border: 0.30 0.03 280;
+        --input: 0.32 0.03 280;
+        --ring: 0.65 0.12 280;
+        --chart-1: 0.70 0.15 280;
+        --chart-2: 0.75 0.12 200;
+        --chart-3: 0.80 0.10 340;
+        --chart-4: 0.85 0.08 30;
+        --chart-5: 0.75 0.10 160;
+        --sidebar: 0.22 0.03 280;
+        --sidebar-foreground: 0.95 0.02 280;
+        --sidebar-primary: 0.75 0.12 280;
+        --sidebar-primary-foreground: 0.18 0.03 280;
+        --sidebar-accent: 0.28 0.03 280;
+        --sidebar-accent-foreground: 0.95 0.02 280;
+        --sidebar-border: 0.30 0.03 280;
+        --sidebar-ring: 0.65 0.12 280;
+        
+        /* ZenLink custom colors - dark mode */
+        --zen-lavender: 0.70 0.15 290;
+        --zen-sky: 0.75 0.10 200;
+        --zen-blush: 0.72 0.12 340;
+        --zen-peach: 0.78 0.10 40;
+        --zen-glow: 0.65 0.20 280;
+    }
+
+    * {
+        @apply border-border;
+    }
+    
+    body {
+        @apply bg-background text-foreground;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Poppins', 'Inter', sans-serif;
+        font-weight: 600;
+    }
+}
+
+@layer components {
+    .glass-card {
+        background-color: oklch(var(--card) / 0.4);
+        backdrop-filter: blur(24px);
+        border: 1px solid oklch(var(--border) / 0.5);
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+    }
+    
+    .glass-card-strong {
+        background-color: oklch(var(--card) / 0.6);
+        backdrop-filter: blur(32px);
+        border: 1px solid oklch(var(--border) / 0.6);
+        box-shadow: 0 12px 48px 0 rgba(0, 0, 0, 0.12);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(to right, oklch(var(--zen-lavender)), oklch(var(--zen-blush)));
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        box-shadow: 0 10px 25px oklch(var(--primary) / 0.3);
+    }
+    
+    .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+        background-color: oklch(var(--card) / 0.4);
+        backdrop-filter: blur(24px);
+        border: 1px solid oklch(var(--border) / 0.5);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+        background-color: oklch(var(--card) / 0.6);
+    }
+    
+    .zen-gradient-bg {
+        background: linear-gradient(135deg, 
+            oklch(var(--zen-lavender) / 0.3) 0%, 
+            oklch(var(--zen-sky) / 0.2) 25%,
+            oklch(var(--zen-blush) / 0.3) 50%,
+            oklch(var(--zen-peach) / 0.2) 75%,
+            oklch(var(--zen-lavender) / 0.3) 100%
+        );
+    }
+    
+    .zen-glow {
+        box-shadow: 0 0 40px oklch(var(--zen-glow) / 0.3);
+    }
+    
+    .zen-glow-sm {
+        box-shadow: 0 0 20px oklch(var(--zen-glow) / 0.2);
+    }
+    
+    .floating-animation {
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .floating-animation-delayed {
+        animation: float 6s ease-in-out 2s infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+    
+    .pulse-glow {
+        animation: pulse-glow 3s ease-in-out infinite;
+    }
+    
+    @keyframes pulse-glow {
+        0%, 100% {
+            box-shadow: 0 0 20px oklch(var(--zen-glow) / 0.2);
+        }
+        50% {
+            box-shadow: 0 0 40px oklch(var(--zen-glow) / 0.4);
+        }
+    }
+    
+    .comfort-mode .zen-glow,
+    .comfort-mode .zen-glow-sm {
+        box-shadow: none;
+    }
+    
+    .comfort-mode .pulse-glow {
+        animation: none;
+        box-shadow: 0 0 10px oklch(var(--zen-glow) / 0.1);
+    }
+    
+    .comfort-mode .floating-animation,
+    .comfort-mode .floating-animation-delayed {
+        animation: none;
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+        .floating-animation,
+        .floating-animation-delayed,
+        .pulse-glow {
+            animation: none;
+        }
+    }
+}

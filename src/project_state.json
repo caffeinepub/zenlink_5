@@ -1,0 +1,84 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Personality/onboarding app with a guided \"Begin the journey\" flow collecting user profile info, then MBTI (known or take test), and landing on a home screen that prominently shows the user's avatar/profile and provides access to all options.",
+  "architectural_notes": [
+    "Onboarding flow order: Profile info -> MBTI known? (branch to MBTI test if unknown) -> auto-route to Home."
+  ],
+  "known_issues": [
+    "Current onboarding flow jumps directly to asking for name/avatar/perspectives/interests and does not correctly prompt for MBTI known vs take test in the desired sequence.",
+    "Known issue: user must press an extra Continue instead of auto-navigating to Home after onboarding/MBTI."
+  ],
+  "isFixRequest": true,
+  "existing_features": [
+    {
+      "id": "feature-update-the-authenticated-landingpage-begin-your-journey-action-so-it-routes-to-the-onboarding-flow-starting-with-profile-setup-name-avatar-perspectives-interests-rather-than-directly-to-the-mbti-quiz",
+      "title": "Update the authenticated LandingPage \"Begin Your Journey\" action so it routes to the onboarding flow starting with profile setup (name, avatar, perspectives, interests) rather than directly to the MBTI quiz.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-after-the-profile-setup-step-completes-saving-name-avatar-perspectives-interests-insert-an-mbti-decision-step-that-asks-whether-the-user-already-knows-their-mbti-type-or-wants-to-take-the-mbti-test-only-show-the-mbti-quiz-questions-if-the-user-chooses-to-take-the-test",
+      "title": "After the profile setup step completes (saving name/avatar/perspectives/interests), insert an MBTI decision step that asks whether the user already knows their MBTI type or wants to take the MBTI test; only show the MBTI quiz questions if the user chooses to take the test.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-mbti-step-completes-the-onboarding-flow-by-automatically-navigating-to-the-home-screen-after-the-user-finishes-the-mbti-step-either-by-saving-a-known-mbti-type-saving-a-computed-quiz-result-or-skipping-saving-without-requiring-an-extra-continue-on-a-separate-screen",
+      "title": "Ensure the MBTI step completes the onboarding flow by automatically navigating to the Home screen after the user finishes the MBTI step (either by saving a known MBTI type, saving a computed quiz result, or skipping saving), without requiring an extra \"Continue\" on a separate screen.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-home-screen-to-prominently-show-the-current-user-s-avatar-and-profile-at-minimum-avatar-display-name-centered-in-the-middle-of-the-home-screen",
+      "title": "Update the Home screen to prominently show the current user’s avatar and profile (at minimum: avatar + display name) centered in the middle of the Home screen.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-home-screen-provides-navigation-access-to-every-main-option-section-available-in-the-app-routes-not-just-a-subset-so-users-can-reach-each-feature-from-home",
+      "title": "Ensure the Home screen provides navigation access to every main option/section available in the app routes (not just a subset), so users can reach each feature from Home.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Adjust onboarding sequence: after initial name/avatar/perspectives/interests, ask whether user knows MBTI type or wants to take the MBTI test; only show MBTI questions if they don't know.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "After completing onboarding/MBTI flow, automatically navigate to the Home screen without requiring an extra Continue press.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Update Home screen layout to show user's avatar and profile centered prominently.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Ensure every main option/feature is accessible from the Home screen (all options present on home).",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "projectName": "Fix onboarding flow: MBTI known-vs-test step, auto-redirect to Home, and center profile on Home with all options",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

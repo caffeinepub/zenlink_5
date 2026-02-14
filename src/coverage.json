@@ -1,0 +1,88 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-14T09:41:12.070Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 5,
+    "implemented": 5,
+    "items": [
+      {
+        "id": "REQ-1",
+        "summary": "Update the authenticated LandingPage \"Begin Your Journey\" action so it routes to the onboarding flow starting with profile setup (name, avatar, perspectives, interests) rather than directly to the MBTI quiz.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/LandingPage.tsx",
+          "frontend/src/App.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/LandingPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-2",
+        "summary": "After the profile setup step completes (saving name/avatar/perspectives/interests), insert an MBTI decision step that asks whether the user already knows their MBTI type or wants to take the MBTI test; only show the MBTI quiz questions if the user chooses to take the test.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/auth/ProfileSetupGate.tsx",
+          "frontend/src/pages/MbtiQuizPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/MbtiQuizPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-3",
+        "summary": "Ensure the MBTI step completes the onboarding flow by automatically navigating to the Home screen after the user finishes the MBTI step (either by saving a known MBTI type, saving a computed quiz result, or skipping saving), without requiring an extra \"Continue\" on a separate screen.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/MbtiQuizPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/MbtiQuizPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-4",
+        "summary": "Update the Home screen to prominently show the current user’s avatar and profile (at minimum: avatar + display name) centered in the middle of the Home screen.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/HomePage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/HomePage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Ensure the Home screen provides navigation access to every main option/section available in the app routes (not just a subset), so users can reach each feature from Home.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/HomePage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/HomePage.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/blob-storage/Mixin.mo",
+    "backend/blob-storage/Storage.mo",
+    "build-request.json",
+    "caffeine.lock.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/pages/HomePage.tsx",
+    "frontend/src/pages/LandingPage.tsx",
+    "frontend/src/pages/MbtiQuizPage.tsx",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}
