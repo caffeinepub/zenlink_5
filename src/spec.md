@@ -1,13 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Fix the onboarding sequence to start with profile setup, add an MBTI known-vs-test decision step, auto-redirect to Home after MBTI completion, and update Home to center the user profile while providing navigation to all main app sections.
+**Goal:** Polish key judging-flow UX by adding a Home quote, enabling circle entry, preventing Connections chat crashes, and ensuring Global Chat isn’t empty on fresh state.
 
 **Planned changes:**
-- Update the authenticated LandingPage “Begin Your Journey” action to route into onboarding starting with profile setup (ProfileSetupGate) instead of going directly to the MBTI quiz.
-- After profile setup saves, add an MBTI decision screen: let users choose between entering a known MBTI type or taking the existing MBTI test; only show quiz questions when “Take the MBTI test” is selected.
-- Complete onboarding by automatically navigating to “/home” immediately after the MBTI step finishes (known type saved, quiz result saved, or skipped), with no extra required “Continue” screen.
-- Update the Home screen layout to show the current user’s avatar and display name as the central, prominent element, including a reasonable loading/empty state while fetching profile data.
-- Ensure Home includes navigation entries to all primary app routes/sections currently available (avoiding redundant duplicate Home entries), and verify each entry routes correctly.
+- Add a new motivational quote section (English) at the bottom of the Home page after “Your Journey Continues,” ensuring it renders consistently on mobile and desktop without disrupting existing layout.
+- Update the Circles page so each circle’s primary action navigates to an in-app circle view screen (frontend-only), showing the circle name/topic and providing a clear way to return to the Circles list.
+- Fix the Connections → Start Chat flow to prevent runtime errors by safely handling invalid/placeholder partner identifiers and ensuring ChatPage can render a safe “no chat selected / invalid partner” state with a user-friendly message.
+- Seed Global Chat with multiple initial thoughts/experiences so a fresh state shows a non-empty feed, and update/remove empty-state copy to avoid “you are the first” phrasing (remove “Be the first to share”); keep all user-facing text in English.
 
-**User-visible outcome:** Signed-in users who click “Begin Your Journey” complete profile setup, choose to enter or test MBTI, and are taken to Home automatically; on Home they see their avatar and name centered and can navigate to every main section from the Home screen.
+**User-visible outcome:** Users see a motivational quote at the end of Home, can enter and view a circle screen from Circles, can start chats from Connections without crashes (with graceful handling of invalid chat targets), and Global Chat shows realistic seeded posts and no longer implies the user is the first poster.

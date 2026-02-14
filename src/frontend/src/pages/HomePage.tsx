@@ -1,11 +1,30 @@
 import { Link } from '@tanstack/react-router';
-import { Home, TrendingUp, MessageSquare, Users, Circle, MessageCircleMore, Calendar, Globe, User, Shield, Sparkles } from 'lucide-react';
+import { Home, TrendingUp, MessageSquare, Users, Circle, MessageCircleMore, Calendar, Globe, User, Shield, Sparkles, MessagesSquare, Heart } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Avatar, AvatarFallback } from '../components/ui/avatar';
-import { useGetCallerUserProfile } from '../hooks/useQueries';
+import { useGetCallerUserProfile, useGetTopMoments } from '../hooks/useQueries';
+import { useOnboardingCompletionMessage } from '../hooks/useOnboardingCompletionMessage';
+import TransientBanner from '../components/feedback/TransientBanner';
+import WeeklyHighlightSpotlight from '../components/highlights/WeeklyHighlightSpotlight';
+
+const motivationalQuotes = [
+  "Every step forward is progress, no matter how small.",
+  "Your vulnerability is your strength.",
+  "Growth happens outside your comfort zone.",
+  "You are worthy of connection and belonging.",
+  "Healing is not linear, and that's okay.",
+  "Your story matters, and so do you.",
+  "Be gentle with yourself—you're doing your best.",
+  "Connection begins with authenticity.",
+];
 
 export default function HomePage() {
   const { data: userProfile, isLoading } = useGetCallerUserProfile();
+  const { data: topMoments = [], isLoading: momentsLoading } = useGetTopMoments();
+  const { message, clearCompletionMessage } = useOnboardingCompletionMessage();
+
+  // Select a random quote
+  const quote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
 
   const navigationOptions = [
     {
@@ -28,6 +47,13 @@ export default function HomePage() {
       icon: Users,
       description: 'Find like-minded people',
       gradient: 'from-zen-peach to-zen-lavender',
+    },
+    {
+      to: '/global-chat',
+      label: 'Global Chat',
+      icon: MessagesSquare,
+      description: 'Share with the community',
+      gradient: 'from-zen-lavender to-zen-sky',
     },
     {
       to: '/circles',
@@ -82,6 +108,13 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen py-12 px-4">
+      {message && (
+        <TransientBanner
+          message={message}
+          onDismiss={clearCompletionMessage}
+        />
+      )}
+      
       <div className="container mx-auto max-w-6xl space-y-12">
         {/* User Profile Section - Centered and Prominent */}
         <div className="flex flex-col items-center justify-center space-y-6">
@@ -123,6 +156,9 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* Weekly Highlight Spotlight */}
+        {!momentsLoading && <WeeklyHighlightSpotlight moments={topMoments} />}
+
         {/* Navigation Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {navigationOptions.map((option) => {
@@ -154,6 +190,19 @@ export default function HomePage() {
           <p className="text-muted-foreground max-w-2xl mx-auto">
             ZenLink is designed to foster genuine connections and emotional well-being. 
             Explore weekly debates, share meaningful moments, connect with others, and grow together in a supportive environment.
+          </p>
+        </div>
+
+        {/* Motivational Quote Section */}
+        <div className="glass-card p-8 rounded-3xl text-center space-y-4 bg-gradient-to-br from-zen-lavender/10 via-zen-blush/10 to-zen-peach/10">
+          <div className="flex justify-center">
+            <Heart className="w-8 h-8 text-zen-blush" />
+          </div>
+          <blockquote className="text-xl md:text-2xl font-medium italic text-foreground/90 max-w-2xl mx-auto">
+            "{quote}"
+          </blockquote>
+          <p className="text-sm text-muted-foreground">
+            A reminder for your journey
           </p>
         </div>
       </div>

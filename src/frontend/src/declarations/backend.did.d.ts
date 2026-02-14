@@ -10,6 +10,20 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface ChatMessage {
+  'content' : string,
+  'sender' : Principal,
+  'timestamp' : Time,
+  'perspective' : string,
+}
+export interface Connection {
+  'id' : string,
+  'interests' : Array<string>,
+  'name' : string,
+  'isAvailable' : boolean,
+  'personalityType' : string,
+  'avatar' : string,
+}
 export interface DailyChallenge {
   'id' : bigint,
   'streak' : bigint,
@@ -46,7 +60,33 @@ export interface WeeklyMoment {
   'timestamp' : Time,
   'category' : string,
 }
+export interface _CaffeineStorageCreateCertificateResult {
+  'method' : string,
+  'blob_hash' : string,
+}
+export interface _CaffeineStorageRefillInformation {
+  'proposed_top_up_amount' : [] | [bigint],
+}
+export interface _CaffeineStorageRefillResult {
+  'success' : [] | [boolean],
+  'topped_up_amount' : [] | [bigint],
+}
 export interface _SERVICE {
+  '_caffeineStorageBlobIsLive' : ActorMethod<[Uint8Array], boolean>,
+  '_caffeineStorageBlobsToDelete' : ActorMethod<[], Array<Uint8Array>>,
+  '_caffeineStorageConfirmBlobDeletion' : ActorMethod<
+    [Array<Uint8Array>],
+    undefined
+  >,
+  '_caffeineStorageCreateCertificate' : ActorMethod<
+    [string],
+    _CaffeineStorageCreateCertificateResult
+  >,
+  '_caffeineStorageRefillCashier' : ActorMethod<
+    [[] | [_CaffeineStorageRefillInformation]],
+    _CaffeineStorageRefillResult
+  >,
+  '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'completeDailyChallenge' : ActorMethod<[bigint], undefined>,
@@ -57,17 +97,22 @@ export interface _SERVICE {
     { 'totalImpacts' : bigint, 'totalUsers' : bigint, 'totalMoments' : bigint }
   >,
   'getAllUserProfiles' : ActorMethod<[], Array<[Principal, UserProfile]>>,
+  'getAvailableConnections' : ActorMethod<[], Array<Connection>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getConversation' : ActorMethod<[Principal], Array<ChatMessage>>,
   'getDailyChallenges' : ActorMethod<[], Array<DailyChallenge>>,
+  'getGlobalChatFeed' : ActorMethod<[], Array<ChatMessage>>,
   'getGlobalStats' : ActorMethod<[], GlobalStats>,
   'getTopMoments' : ActorMethod<[], Array<WeeklyMoment>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'getWeeklyChallenges' : ActorMethod<[], Array<WeeklyChallenge>>,
   'incrementImpact' : ActorMethod<[bigint], undefined>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'postGlobalMessage' : ActorMethod<[string, string], undefined>,
   'removeMoment' : ActorMethod<[bigint], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
+  'sendMessage' : ActorMethod<[Principal, string], undefined>,
   'submitWeeklyMoment' : ActorMethod<[string, string], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;

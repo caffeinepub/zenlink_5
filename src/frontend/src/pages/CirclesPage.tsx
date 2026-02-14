@@ -1,17 +1,15 @@
 import { useState } from 'react';
+import { useNavigate } from '@tanstack/react-router';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Users, Plus } from 'lucide-react';
-
-const mockCircles = [
-  { id: 1, name: 'Growth Seekers', topic: 'Growth', members: 5, maxMembers: 7 },
-  { id: 2, name: 'Healing Hearts', topic: 'Healing', members: 4, maxMembers: 7 },
-];
+import { mockCircles } from '../data/mockCircles';
 
 export default function CirclesPage() {
+  const navigate = useNavigate();
   const [circleName, setCircleName] = useState('');
   const [circleTopic, setCircleTopic] = useState('Growth');
   const [open, setOpen] = useState(false);
@@ -22,6 +20,10 @@ export default function CirclesPage() {
     setOpen(false);
     setCircleName('');
     setCircleTopic('Growth');
+  };
+
+  const handleViewCircle = (circleId: string) => {
+    navigate({ to: '/circles/$circleId', params: { circleId } });
   };
 
   return (
@@ -92,7 +94,10 @@ export default function CirclesPage() {
                   <span>{circle.members}/{circle.maxMembers}</span>
                 </div>
               </div>
-              <Button className="btn-secondary w-full rounded-full">
+              <Button 
+                onClick={() => handleViewCircle(circle.id)}
+                className="btn-secondary w-full rounded-full"
+              >
                 View Circle
               </Button>
             </div>

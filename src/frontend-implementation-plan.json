@@ -1,96 +1,93 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Onboarding flow fixes: route Begin to profile setup, add MBTI known-vs-test step with auto-redirect, and enhance Home profile center + full navigation",
+  "title": "Polish judging flow: Home quote, Circles entry, safer Start Chat, and seeded Global Chat",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Route the authenticated LandingPage \"Begin Your Journey\" action into onboarding starting at profile setup (not directly to the MBTI quiz).",
+      "summary": "Add a bottom-of-Home motivational quote section after the existing “Your Journey Continues” section without impacting layout.",
       "acceptanceCriteria": [
-        "When a signed-in user clicks \"Begin Your Journey\" on the landing page, the app navigates to a route that triggers ProfileSetupGate (profile setup screen) if the user has no profile yet.",
-        "A signed-in user with an existing profile is not blocked by ProfileSetupGate when using \"Begin Your Journey\" (they proceed to the appropriate next screen, e.g., Home).",
-        "User-facing button text remains in English: \"Begin Your Journey\"."
+        "Home page displays a motivational quote section at the bottom of the page.",
+        "The quote text is English and does not overlap or break the existing Home page sections on mobile and desktop."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/LandingPage.tsx",
+          "path": "frontend/src/pages/HomePage.tsx",
           "operation": "modify",
-          "description": "Update the authenticated \"Begin Your Journey\" Link to navigate to \"/home\" (protected) so first-time users hit ProfileSetupGate and existing-profile users land on Home. Ensure the button text remains \"Begin Your Journey\" in English."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Keep ProtectedRoute + ProfileSetupGate behavior aligned with the authorization component’s recommended profile gating approach (getCallerUserProfile + isFetched) to prevent flashing and ensure first-time onboarding triggers correctly. Verify the component's usage instructions before implementing."
+          "description": "Add a new, responsive motivational quote section (English) immediately after the existing “Your Journey Continues” card, ensuring spacing and typography match current layout and do not affect other sections."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Insert an MBTI decision step after profile setup: choose known type vs take test; only show quiz if user chooses test.",
+      "summary": "Make each circle’s primary action navigate into an in-app circle detail view that shows circle info and supports returning to the circles list, without backend changes.",
       "acceptanceCriteria": [
-        "Immediately after ProfileSetupGate successfully saves the profile, the next screen asks (in English) whether the user knows their MBTI type or wants to take the test.",
-        "If the user selects \"I know my MBTI type\", the UI prompts them to select/enter their MBTI type (e.g., one of the 16 types) and proceed without showing quiz questions.",
-        "If the user selects \"Take the MBTI test\", the existing quiz questions flow is shown.",
-        "The MBTI quiz questions are not displayed unless the user chooses the test path."
+        "Clicking \"View Circle\" for a listed circle takes the user to a circle view screen within the app.",
+        "The circle view screen shows the circle name/topic and provides an obvious way to return to the Circles list.",
+        "No runtime errors occur when entering a circle."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/auth/ProfileSetupGate.tsx",
-          "operation": "modify",
-          "description": "After successful profile save, route into the MBTI step that starts with the new decision UI (keep navigation target consistent with the updated MBTI page behavior). Ensure all user-facing text remains English."
+          "path": "frontend/src/data/mockCircles.ts",
+          "operation": "create",
+          "description": "Create a shared mock circles data module (ids, name, topic, members/maxMembers) that can be reused by the Circles list and the circle detail screen (frontend-only; no backend dependency)."
         },
         {
-          "path": "frontend/src/pages/MbtiQuizPage.tsx",
+          "path": "frontend/src/pages/CirclesPage.tsx",
           "operation": "modify",
-          "description": "Add an initial MBTI decision screen (known type vs take test) and implement a known-type selection/entry flow (e.g., selection among the 16 types) that proceeds without rendering quiz questions. Only render the existing quiz questions after the user selects the test path. Use existing composed shadcn/ui components (e.g., Button, RadioGroup, Select) without editing frontend/src/components/ui. Verify the component's usage instructions before implementing."
+          "description": "Replace the no-op “View Circle” button behavior to navigate to an in-app circle detail route (e.g., /circles/$circleId) using the circle id from the shared mock circles module."
+        },
+        {
+          "path": "frontend/src/pages/CircleDetailPage.tsx",
+          "operation": "create",
+          "description": "Implement a circle detail screen that reads the circle id from the route params, looks up the circle in the shared mock circles data, displays circle name/topic (and optional member counts), and provides an obvious back action to return to /circles. Handle unknown ids gracefully with an English message and a back link."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Register and wire a new protected route for the circle detail screen (e.g., /circles/$circleId) so it is reachable via UI navigation from the Circles page."
         }
       ]
     },
     {
       "id": "REQ-3",
-      "summary": "Auto-navigate to Home after completing the MBTI step (known type save, quiz save, or skip) with no extra post-step Continue screen.",
+      "summary": "Prevent runtime crashes when starting a chat from Connections by safely handling invalid/placeholder partner identifiers and ensuring ChatPage never throws on invalid Principal parsing.",
       "acceptanceCriteria": [
-        "After the user completes the MBTI decision step via any path (known type saved, quiz result saved, or user skips saving), the app navigates to \"/home\" automatically.",
-        "There is no additional required user click after finishing the MBTI step to reach Home (i.e., no extra post-MBTI \"Continue\" gate).",
-        "If a brief confirmation state is shown (e.g., \"Profile built successfully\"), it must auto-redirect to Home without any button press."
+        "Clicking \"Start Chat\" on the Connections page does not crash the app or show an uncaught error in the UI/console.",
+        "If a partner identifier cannot be parsed into a Principal, the app shows a user-friendly message and routes to a safe screen state (e.g., Chat page with \"No Chat Selected\" state or similar) without throwing.",
+        "When a valid partner Principal is present in the URL, ChatPage continues to load conversation messages as before."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/MbtiQuizPage.tsx",
+          "path": "frontend/src/pages/ChatPage.tsx",
           "operation": "modify",
-          "description": "Ensure every completion path (save known MBTI type, save quiz result, or continue without saving) transitions into a brief optional confirmation state that auto-redirects to \"/home\" without requiring an extra click. Keep text in English."
+          "description": "Guard Principal parsing by wrapping Principal.fromText in a try/catch and treating invalid partner values as null; render a safe, user-friendly state (English) instead of throwing, and avoid calling conversation queries with invalid partner values."
+        },
+        {
+          "path": "frontend/src/pages/MatchingPage.tsx",
+          "operation": "modify",
+          "description": "Harden the “Start Chat” navigation so it does not pass placeholder/invalid partner identifiers that can crash ChatPage. If the connection id is not a valid Principal text, navigate to /chat without a partner (safe state) and show an English, user-friendly notification in-page (or via an existing banner mechanism) explaining that the chat cannot be opened yet."
         }
       ]
     },
     {
       "id": "REQ-4",
-      "summary": "Center the current user’s avatar and display name prominently on the Home screen with sensible loading/empty states.",
+      "summary": "Seed Global Chat with realistic initial messages for empty/fresh states and remove “be the first” empty-state wording; keep all user-facing text in English.",
       "acceptanceCriteria": [
-        "On \"/home\", the user’s avatar and display name are visible and placed as the central, prominent element of the page layout.",
-        "Home screen fetches and renders the current user profile (and shows a reasonable loading/empty state if it is not yet available).",
-        "All user-facing text used for labels/headings on the Home screen is in English."
+        "On a fresh state where no global chat messages exist, the Global Chat feed displays a non-empty list of seeded messages.",
+        "The Global Chat page no longer displays the empty-state text \"No messages yet. Be the first to share!\" and does not include similar \"you are the first\" wording anywhere in the Global Chat UI.",
+        "Seeded messages look like realistic short thoughts/experiences and include perspectives that match the existing perspective options."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Fetch the current user profile using existing React Query hook(s) and render a prominent centered profile section (at minimum avatar + display name). Add a loading state and a safe empty state. Follow the authorization component guidance to prefer showing the profile name (not the principal). Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "summary": "Expand Home navigation so users can access every main app section/route from Home (no redundant duplicate Home entry).",
-      "acceptanceCriteria": [
-        "Home includes navigation entries (cards/buttons/links) to all primary app routes currently present (e.g., Home, Weekly Highlights, Weekly Debates, Connections, Circles, Chat, Weekly Moments, Daily Challenges, Global Chart, Profile, and Safety if desired).",
-        "Each navigation entry from Home successfully routes to its destination without errors.",
-        "Home does not contain duplicate \"Home\" navigation entries that do not add value (avoid redundant navigation items)."
-      ],
-      "file_operations": [
+          "path": "frontend/src/data/globalChatSeed.ts",
+          "operation": "create",
+          "description": "Create a frontend-only seed dataset of realistic short global chat messages, each tagged with one of the existing Global Chat perspectives; include multiple entries across perspectives for a non-empty initial feed."
+        },
         {
-          "path": "frontend/src/pages/HomePage.tsx",
+          "path": "frontend/src/pages/GlobalChatPage.tsx",
           "operation": "modify",
-          "description": "Update the Home navigation card/list set to include links to all primary existing routes: Weekly Highlights (/highlights), Weekly Debates (/debates), Connections (/matching), Circles (/circles), Chat (/chat), Weekly Moments (/moments), Daily Challenges (/challenges), Global Chart (/global-chart), Profile (/profile), and Safety (/safety). Avoid including a redundant \"Home\" navigation item since the user is already on Home. Ensure labels/descriptions are English and that each Link routes correctly."
+          "description": "Update Global Chat feed rendering to display seeded messages when the backend feed returns empty (fresh/empty state). Remove/replace the current empty-state copy containing “Be the first to share!” with neutral English copy, ensuring no “you are the first” phrasing appears anywhere in the Global Chat UI."
         }
       ]
     }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useGetCallerUserProfile, useSaveCallerUserProfile } from '../hooks/useQueries';
+import { useOnboardingCompletionMessage } from '../hooks/useOnboardingCompletionMessage';
 import { Button } from '../components/ui/button';
 import { Progress } from '../components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
@@ -105,6 +106,7 @@ type MbtiStep = 'decision' | 'known-type' | 'quiz' | 'results';
 
 export default function MbtiQuizPage() {
   const navigate = useNavigate();
+  const { setCompletionMessage } = useOnboardingCompletionMessage();
   const { data: userProfile } = useGetCallerUserProfile();
   const { mutate: saveProfile, isPending } = useSaveCallerUserProfile();
   const [step, setStep] = useState<MbtiStep>('decision');
@@ -115,15 +117,16 @@ export default function MbtiQuizPage() {
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
-  // Auto-redirect after saving
+  // Auto-redirect after saving with completion message
   useEffect(() => {
     if (step === 'results' && mbtiType) {
       const timer = setTimeout(() => {
+        setCompletionMessage('Profile completed successfully! Explore Connections, Weekly Debates, and Weekly Highlights to get started.');
         navigate({ to: '/home' });
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [step, mbtiType, navigate]);
+  }, [step, mbtiType, navigate, setCompletionMessage]);
 
   const handleDecision = (choice: 'know' | 'test') => {
     if (choice === 'know') {
@@ -151,6 +154,7 @@ export default function MbtiQuizPage() {
   };
 
   const handleSkipKnownType = () => {
+    setCompletionMessage('Profile saved successfully! Explore Connections, Weekly Debates, and Weekly Highlights to get started.');
     navigate({ to: '/home' });
   };
 
@@ -202,6 +206,7 @@ export default function MbtiQuizPage() {
   };
 
   const handleSkipQuiz = () => {
+    setCompletionMessage('Profile saved successfully! Explore Connections, Weekly Debates, and Weekly Highlights to get started.');
     navigate({ to: '/home' });
   };
 
@@ -236,7 +241,10 @@ export default function MbtiQuizPage() {
 
           <div className="text-center">
             <button
-              onClick={() => navigate({ to: '/home' })}
+              onClick={() => {
+                setCompletionMessage('Profile saved successfully! Explore Connections, Weekly Debates, and Weekly Highlights to get started.');
+                navigate({ to: '/home' });
+              }}
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               Skip for now
@@ -330,7 +338,7 @@ export default function MbtiQuizPage() {
             </h2>
             <p className="text-lg text-muted-foreground">{description.description}</p>
           </div>
-          <p className="text-muted-foreground">Taking you to your home page...</p>
+          <p className="text-muted-foreground">Profile completed successfully! Taking you to your home page...</p>
         </div>
       </div>
     );
@@ -390,18 +398,20 @@ export default function MbtiQuizPage() {
           </Button>
           <Button
             onClick={handleNext}
-            disabled={!hasAnswer}
+            disabled={!hasAnswer || isPending}
             className="btn-primary flex-1 py-3 rounded-full"
           >
-            {currentQuestion === questions.length - 1 ? 'See Results' : 'Next'}
+            {isPending ? 'Saving...' : currentQuestion === questions.length - 1 ? 'Finish' : 'Next'}
           </Button>
-          <Button
+        </div>
+
+        <div className="text-center">
+          <button
             onClick={handleSkipQuiz}
-            variant="ghost"
-            className="px-8 py-3 rounded-full"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
-            Skip
-          </Button>
+            Skip quiz
+          </button>
         </div>
       </div>
     </div>

@@ -38,6 +38,7 @@ export default function ZenNav() {
         { to: '/highlights', label: 'Weekly Highlights' },
         { to: '/debates', label: 'Weekly Debates' },
         { to: '/matching', label: 'Connections' },
+        { to: '/global-chat', label: 'Global Chat' },
         { to: '/circles', label: 'Circles' },
       ]
     : [

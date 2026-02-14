@@ -1,114 +1,102 @@
 {
   "kind": "build_request",
-  "title": "Fix onboarding flow: MBTI known-vs-test step, auto-redirect to Home, and center profile on Home with all options",
+  "title": "Polish judging flow: home quote, circles entry, fix connections chat error, and seed global chat",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Update the authenticated LandingPage \"Begin Your Journey\" action so it routes to the onboarding flow starting with profile setup (name, avatar, perspectives, interests) rather than directly to the MBTI quiz.",
+      "text": "Add a motivational quote section at the end of the Home page (after the existing \"Your Journey Continues\" section). The quote must be in English and render consistently without affecting existing layout.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-6"
         ],
         "quotes": [
-          "Whenever I press begin the journey it shirt immediately asked for name Avatar and perspectives and interest"
+          "Lastly at the end of the home screen give any motivational quote"
         ]
       },
       "acceptanceCriteria": [
-        "When a signed-in user clicks \"Begin Your Journey\" on the landing page, the app navigates to a route that triggers ProfileSetupGate (profile setup screen) if the user has no profile yet.",
-        "A signed-in user with an existing profile is not blocked by ProfileSetupGate when using \"Begin Your Journey\" (they proceed to the appropriate next screen, e.g., Home).",
-        "User-facing button text remains in English: \"Begin Your Journey\"."
+        "Home page displays a motivational quote section at the bottom of the page.",
+        "The quote text is English and does not overlap or break the existing Home page sections on mobile and desktop."
       ]
     },
     {
       "id": "REQ-2",
-      "text": "After the profile setup step completes (saving name/avatar/perspectives/interests), insert an MBTI decision step that asks whether the user already knows their MBTI type or wants to take the MBTI test; only show the MBTI quiz questions if the user chooses to take the test.",
+      "text": "Enable users to enter a circle from the Circles page by making each circle’s primary action navigate to an in-app circle view (e.g., a circle detail screen) rather than a no-op button. The circle view must be accessible via UI and must not require backend changes.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-6"
         ],
         "quotes": [
-          "after pressing continue it should ask if you can take your mbti test or you know it already ask it after ask the questions for MBT I test if they don't know there mbti type"
+          "allow access for the user to enter into the circle"
         ]
       },
       "acceptanceCriteria": [
-        "Immediately after ProfileSetupGate successfully saves the profile, the next screen asks (in English) whether the user knows their MBTI type or wants to take the test.",
-        "If the user selects \"I know my MBTI type\", the UI prompts them to select/enter their MBTI type (e.g., one of the 16 types) and proceed without showing quiz questions.",
-        "If the user selects \"Take the MBTI test\", the existing quiz questions flow is shown.",
-        "The MBTI quiz questions are not displayed unless the user chooses the test path."
+        "Clicking \"View Circle\" for a listed circle takes the user to a circle view screen within the app.",
+        "The circle view screen shows the circle name/topic and provides an obvious way to return to the Circles list.",
+        "No runtime errors occur when entering a circle."
       ]
     },
     {
       "id": "REQ-3",
-      "text": "Ensure the MBTI step completes the onboarding flow by automatically navigating to the Home screen after the user finishes the MBTI step (either by saving a known MBTI type, saving a computed quiz result, or skipping saving), without requiring an extra \"Continue\" on a separate screen.",
-      "target": "frontend",
+      "text": "Fix the Connections -> Start Chat flow so pressing \"Start Chat\" never triggers a runtime error. Handle invalid/placeholder partner identifiers safely by preventing crashes in ChatPage and/or ensuring navigation only uses valid partner values.",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-6"
         ],
         "quotes": [
-          "later after pressing continue go to home screen automatically so they don't have to press continue again"
+          "don't show an error when we press start a conversation in connections"
         ]
       },
       "acceptanceCriteria": [
-        "After the user completes the MBTI decision step via any path (known type saved, quiz result saved, or user skips saving), the app navigates to \"/home\" automatically.",
-        "There is no additional required user click after finishing the MBTI step to reach Home (i.e., no extra post-MBTI \"Continue\" gate).",
-        "If a brief confirmation state is shown (e.g., \"Profile built successfully\"), it must auto-redirect to Home without any button press."
+        "Clicking \"Start Chat\" on the Connections page does not crash the app or show an uncaught error in the UI/console.",
+        "If a partner identifier cannot be parsed into a Principal, the app shows a user-friendly message and routes to a safe screen state (e.g., Chat page with \"No Chat Selected\" state or similar) without throwing.",
+        "When a valid partner Principal is present in the URL, ChatPage continues to load conversation messages as before."
       ]
     },
     {
       "id": "REQ-4",
-      "text": "Update the Home screen to prominently show the current user’s avatar and profile (at minimum: avatar + display name) centered in the middle of the Home screen.",
-      "target": "frontend",
+      "text": "Seed the Global Chat feed with multiple initial thoughts/experiences so the feed is not empty on a fresh/empty state, and update the empty-state copy to avoid any phrasing implying the user is the first to post (in particular remove \"Be the first to share\"). All user-facing text must be in English.",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-5"
+          "msg-6"
         ],
         "quotes": [
-          "make sure to show their Avatar and profile in the middle of the homescreen"
+          "Also add some of the thoughts or experience is in global chat so that they will not find anything suspicious and don't say you are the first one to share a thought or feeling."
         ]
       },
       "acceptanceCriteria": [
-        "On \"/home\", the user’s avatar and display name are visible and placed as the central, prominent element of the page layout.",
-        "Home screen fetches and renders the current user profile (and shows a reasonable loading/empty state if it is not yet available).",
-        "All user-facing text used for labels/headings on the Home screen is in English."
-      ]
-    },
-    {
-      "id": "REQ-5",
-      "text": "Ensure the Home screen provides navigation access to every main option/section available in the app routes (not just a subset), so users can reach each feature from Home.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-5"
-        ],
-        "quotes": [
-          "make sure each and every option is in home screen"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Home includes navigation entries (cards/buttons/links) to all primary app routes currently present (e.g., Home, Weekly Highlights, Weekly Debates, Connections, Circles, Chat, Weekly Moments, Daily Challenges, Global Chart, Profile, and Safety if desired).",
-        "Each navigation entry from Home successfully routes to its destination without errors.",
-        "Home does not contain duplicate \"Home\" navigation entries that do not add value (avoid redundant navigation items)."
+        "On a fresh state where no global chat messages exist, the Global Chat feed displays a non-empty list of seeded messages.",
+        "The Global Chat page no longer displays the empty-state text \"No messages yet. Be the first to share!\" and does not include similar \"you are the first\" wording anywhere in the Global Chat UI.",
+        "Seeded messages look like realistic short thoughts/experiences and include perspectives that match the existing perspective options."
       ]
     }
   ],
   "constraints": [
-    "Do not edit files under frontend/src/components/ui (read-only Shadcn components); compose them instead.",
-    "Do not edit immutable paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui.",
-    "Backend must remain single-actor (all Motoko logic in backend/main.mo); only add migration.mo if state schema changes (not requested here).",
-    "Use English for all user-facing text."
+    "Use English for any user-facing text.",
+    "Do not edit files in frontend immutable paths (e.g., frontend/src/hooks/useInternetIdentity.ts(x), frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui).",
+    "Backend must remain a single-actor Motoko canister; keep logic in backend/main.mo; add backend/migration.mo changes only if required for state compatibility."
   ],
   "nonGoals": [
-    "Do not add third-party authentication providers (only Internet Identity).",
-    "Do not add external databases or non-Motoko backend services.",
-    "Do not redesign unrelated pages (only adjust onboarding flow and Home layout/navigation as described).",
-    "Do not change the underlying MBTI question set or scoring logic beyond what is necessary to support the known-vs-test branching."
+    "Implementing real-time chat updates (e.g., websockets).",
+    "Adding third-party authentication providers beyond Internet Identity.",
+    "Building a fully persistent circles backend (circles can remain frontend-only/mocked if needed for the judging flow)."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }
