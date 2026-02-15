@@ -1,76 +1,65 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-14T10:38:18.945Z",
-  "summary": "REQ-2 (circle entry/navigation) and REQ-3 (prevent Start Chat crash via safe navigation + safe Principal parsing with a friendly empty state) appear implemented. Global Chat seeding data is added and used when backend feed is empty, but the diff summary is truncated so it’s not fully verifiable that the old empty-state copy (“Be the first to share”) was removed everywhere. Home page quote data/randomization is present, but truncated diff makes it unclear whether a dedicated quote section is actually rendered at the end of the page after “Your Journey Continues.” Several unrelated UI/theming and onboarding changes appear beyond the requested scope.",
+  "generatedAt": "2026-02-14T14:14:53.770Z",
+  "summary": "The diff adds an export script/config and creates a placeholder export folder with a README, but it does not appear to include an actual complete snapshot of the Version 11 project files inside the export folder. Additionally, backend logic files were changed in ways not requested by the BuildRequest.",
   "missing_requirements": [
     {
       "id": "REQ-1",
-      "requirement": "Add a motivational quote section at the end of the Home page (after the existing \"Your Journey Continues\" section), in English, without breaking layout.",
-      "reason": "The diff shows motivational quote strings and random selection logic, but the provided HomePage.tsx content is truncated before showing whether a dedicated quote section is actually rendered, and specifically whether it is placed after the \"Your Journey Continues\" section as required.",
+      "requirement": "Add a new repository folder that contains a complete, shareable snapshot of the Version 11 project files (backend + frontend + project metadata) in the same directory structure as the app.",
+      "reason": "The added export folder (frontend/share/version11) contains only placeholder/documentation files (.gitkeep, .exportignore, README.md) and there is no evidence that it includes copies of backend/, frontend/, and project_state.json under preserved relative paths.",
       "evidence": [
-        "frontend/src/pages/HomePage.tsx (truncated in diff summary)"
+        "frontend/share/version11/.gitkeep",
+        "frontend/share/version11/.exportignore",
+        "frontend/share/version11/README.md",
+        "frontend/scripts/export-version11-config.ts",
+        "frontend/scripts/export-version11.ts"
       ]
     },
     {
-      "id": "REQ-4",
-      "requirement": "Update the Global Chat empty-state copy to remove \"Be the first to share\" or any similar 'you are the first' wording anywhere in the Global Chat UI.",
-      "reason": "The diff implements seed messages so the feed is non-empty when backendMessages is empty, but the provided GlobalChatPage.tsx content is truncated and does not show whether the previous empty-state text was removed/changed (it could still exist in UI branches not visible in the truncation).",
+      "id": "REQ-2",
+      "requirement": "Include a single README in the export folder with English instructions for how to share the exported project without formatting changes (including WhatsApp-safe copying guidance) and how to compress the folder into a ZIP on common operating systems.",
+      "reason": "A README exists in the export folder, but the displayed README.md content is truncated and does not show the required WhatsApp-safe copying guidance or complete ZIP instructions (Linux section appears incomplete in the snippet).",
       "evidence": [
-        "frontend/src/pages/GlobalChatPage.tsx (truncated in diff summary)"
+        "frontend/share/version11/README.md"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Broad visual/theming overhaul (OKLCH pastel color system, glassmorphism utilities, new animations, comfort mode overrides, Tailwind theme extensions).",
-      "reason": "Not requested by any REQ; the BuildRequest focuses on quote section, circles navigation, chat crash fix, and seeding global chat.",
+      "description": "Added/modified backend canister code and migration wiring (new backend/migration.mo and changes to backend/main.mo including sample connections dataset move and migration include).",
+      "reason": "The BuildRequest is focused on exporting/sharing Version 11 code; it explicitly lists non-goals as implementing unrelated app changes, and does not request backend logic changes.",
       "evidence": [
-        "frontend/src/index.css",
-        "frontend/tailwind.config.js",
-        "frontend-file-summaries.txt"
+        "backend/migration.mo",
+        "backend/main.mo"
       ]
     },
     {
-      "description": "Onboarding/flow changes: ProfileSetupGate success screen and auto-navigation behavior; Landing page routing behavior changes; MBTI quiz flow expanded with multiple paths and completion messaging.",
-      "reason": "Not requested by any REQ in the BuildRequest.",
+      "description": "Introduced an automated export script and config (TypeScript) to generate the snapshot folder.",
+      "reason": "The BuildRequest asks for a new repository folder containing a shareable snapshot and a README; it does not request adding scripting tooling to generate it.",
       "evidence": [
-        "frontend/src/components/auth/ProfileSetupGate.tsx",
-        "frontend/src/pages/LandingPage.tsx",
-        "frontend/src/pages/MbtiQuizPage.tsx",
-        "frontend-file-summaries.txt"
+        "frontend/scripts/export-version11.ts",
+        "frontend/scripts/export-version11-config.ts"
       ]
     },
     {
-      "description": "Expanded/changed DebateRoomsPage functionality (rooms list, join flow, in-room view, raise hand toggle, timer, guidelines).",
-      "reason": "Not requested by any REQ in the BuildRequest.",
+      "description": "Added a .exportignore documentation file inside the export folder.",
+      "reason": "Not requested by the BuildRequest/requirements (only asks for the exported snapshot folder and a single README).",
       "evidence": [
-        "frontend/src/pages/DebateRoomsPage.tsx",
-        "frontend-file-summaries.txt"
-      ]
-    },
-    {
-      "description": "Backend changes introducing/moving sample connections dataset and related helper logic (beyond the frontend-only crash fix).",
-      "reason": "REQ-3 can be satisfied purely in frontend by safe navigation/parsing; altering backend connection seeding is not requested by the BuildRequest and could be considered extra scope.",
-      "evidence": [
-        "backend/main.mo (truncated; shows sampleConnectionsList and population helper)"
+        "frontend/share/version11/.exportignore"
       ]
     }
   ],
-  "confidence": 0.62,
+  "confidence": 0.74,
   "changed_files": [
     "backend/main.mo",
+    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/App.tsx",
-    "frontend/src/components/auth/ProfileSetupGate.tsx",
-    "frontend/src/data/globalChatSeed.ts",
-    "frontend/src/data/mockCircles.ts",
-    "frontend/src/pages/ChatPage.tsx",
-    "frontend/src/pages/CircleDetailPage.tsx",
-    "frontend/src/pages/CirclesPage.tsx",
-    "frontend/src/pages/GlobalChatPage.tsx",
-    "frontend/src/pages/HomePage.tsx",
-    "frontend/src/pages/MatchingPage.tsx",
+    "frontend/scripts/export-version11-config.ts",
+    "frontend/scripts/export-version11.ts",
+    "frontend/share/version11/.exportignore",
+    "frontend/share/version11/.gitkeep",
+    "frontend/share/version11/README.md",
     "project_state.json"
   ]
 }

@@ -2,10 +2,13 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-motivational-quote-section-at-the-end-of-the-home-page-after-the-existing-your-journey-continues-section-the-quote-must-be-in-english-and-render-consistently-without-affecting-existing-layout",
-      "featureTitle": "Add a motivational quote section at the end of the Home page (after the existing \"Your Journey Continues\" section). The quote must be in English and render consistently without affecting existing layout.",
+      "featureId": "feature-add-a-new-repository-folder-that-contains-a-complete-shareable-snapshot-of-the-version-11-project-files-backend-frontend-project-metadata-in-the-same-directory-structure-as-the-app",
+      "featureTitle": "Add a new repository folder that contains a complete, shareable snapshot of the Version 11 project files (backend + frontend + project metadata) in the same directory structure as the app.",
       "files": [
-        "frontend/src/pages/HomePage.tsx"
+        "frontend/scripts/export-version11-config.ts",
+        "frontend/scripts/export-version11.ts",
+        "frontend/share/version11/.exportignore",
+        "frontend/share/version11/.gitkeep"
       ],
       "components": [
         "authorization@4.0.0",
@@ -22,13 +25,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-enable-users-to-enter-a-circle-from-the-circles-page-by-making-each-circle-s-primary-action-navigate-to-an-in-app-circle-view-e-g-a-circle-detail-screen-rather-than-a-no-op-button-the-circle-view-must-be-accessible-via-ui-and-must-not-require-backend-changes",
-      "featureTitle": "Enable users to enter a circle from the Circles page by making each circle’s primary action navigate to an in-app circle view (e.g., a circle detail screen) rather than a no-op button. The circle view must be accessible via UI and must not require backend changes.",
+      "featureId": "feature-include-a-single-readme-in-the-export-folder-with-english-instructions-for-how-to-share-the-exported-project-without-formatting-changes-including-whatsapp-safe-copying-guidance-and-how-to-compress-the-folder-into-a-zip-on-common-operating-systems",
+      "featureTitle": "Include a single README in the export folder with English instructions for how to share the exported project without formatting changes (including WhatsApp-safe copying guidance) and how to compress the folder into a ZIP on common operating systems.",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/data/mockCircles.ts",
-        "frontend/src/pages/CircleDetailPage.tsx",
-        "frontend/src/pages/CirclesPage.tsx"
+        "frontend/scripts/export-version11.ts",
+        "frontend/share/version11/README.md"
       ],
       "components": [
         "authorization@4.0.0",
@@ -41,48 +42,6 @@
       ],
       "testIds": [
         "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-fix-the-connections-start-chat-flow-so-pressing-start-chat-never-triggers-a-runtime-error-handle-invalid-placeholder-partner-identifiers-safely-by-preventing-crashes-in-chatpage-and-or-ensuring-navigation-only-uses-valid-partner-values",
-      "featureTitle": "Fix the Connections -> Start Chat flow so pressing \"Start Chat\" never triggers a runtime error. Handle invalid/placeholder partner identifiers safely by preventing crashes in ChatPage and/or ensuring navigation only uses valid partner values.",
-      "files": [
-        "frontend/src/pages/ChatPage.tsx",
-        "frontend/src/pages/MatchingPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-seed-the-global-chat-feed-with-multiple-initial-thoughts-experiences-so-the-feed-is-not-empty-on-a-fresh-empty-state-and-update-the-empty-state-copy-to-avoid-any-phrasing-implying-the-user-is-the-first-to-post-in-particular-remove-be-the-first-to-share-all-user-facing-text-must-be-in-english",
-      "featureTitle": "Seed the Global Chat feed with multiple initial thoughts/experiences so the feed is not empty on a fresh/empty state, and update the empty-state copy to avoid any phrasing implying the user is the first to post (in particular remove \"Be the first to share\"). All user-facing text must be in English.",
-      "files": [
-        "frontend/src/data/globalChatSeed.ts",
-        "frontend/src/pages/GlobalChatPage.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "blob-storage@4.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
       ],
       "confidence": "high"
     }

@@ -34,6 +34,15 @@ export const UserProfile = IDL.Record({
   'location' : IDL.Text,
   'avatar' : IDL.Text,
 });
+export const MemberListing = IDL.Record({
+  'principal' : IDL.Text,
+  'profile' : UserProfile,
+});
+export const MemberSummary = IDL.Record({
+  'principal' : IDL.Text,
+  'displayName' : IDL.Text,
+  'avatar' : IDL.Text,
+});
 export const Connection = IDL.Record({
   'id' : IDL.Text,
   'interests' : IDL.Vec(IDL.Text),
@@ -100,6 +109,7 @@ export const idlService = IDL.Service({
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+  'addConnection' : IDL.Func([IDL.Principal], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'completeDailyChallenge' : IDL.Func([IDL.Nat], [], []),
   'completeWeeklyChallenge' : IDL.Func([IDL.Nat], [], []),
@@ -115,6 +125,8 @@ export const idlService = IDL.Service({
       ],
       ['query'],
     ),
+  'getAllMemberListings' : IDL.Func([], [IDL.Vec(MemberListing)], ['query']),
+  'getAllMembers' : IDL.Func([], [IDL.Vec(MemberSummary)], ['query']),
   'getAllUserProfiles' : IDL.Func(
       [],
       [IDL.Vec(IDL.Tuple(IDL.Principal, UserProfile))],
@@ -132,6 +144,11 @@ export const idlService = IDL.Service({
   'getGlobalChatFeed' : IDL.Func([], [IDL.Vec(ChatMessage)], ['query']),
   'getGlobalStats' : IDL.Func([], [GlobalStats], ['query']),
   'getTopMoments' : IDL.Func([], [IDL.Vec(WeeklyMoment)], ['query']),
+  'getUserConnections' : IDL.Func(
+      [IDL.Principal],
+      [IDL.Vec(IDL.Text)],
+      ['query'],
+    ),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
@@ -174,6 +191,15 @@ export const idlFactory = ({ IDL }) => {
     'comfortMode' : IDL.Bool,
     'communicationStyle' : IDL.Text,
     'location' : IDL.Text,
+    'avatar' : IDL.Text,
+  });
+  const MemberListing = IDL.Record({
+    'principal' : IDL.Text,
+    'profile' : UserProfile,
+  });
+  const MemberSummary = IDL.Record({
+    'principal' : IDL.Text,
+    'displayName' : IDL.Text,
     'avatar' : IDL.Text,
   });
   const Connection = IDL.Record({
@@ -242,6 +268,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+    'addConnection' : IDL.Func([IDL.Principal], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'completeDailyChallenge' : IDL.Func([IDL.Nat], [], []),
     'completeWeeklyChallenge' : IDL.Func([IDL.Nat], [], []),
@@ -257,6 +284,8 @@ export const idlFactory = ({ IDL }) => {
         ],
         ['query'],
       ),
+    'getAllMemberListings' : IDL.Func([], [IDL.Vec(MemberListing)], ['query']),
+    'getAllMembers' : IDL.Func([], [IDL.Vec(MemberSummary)], ['query']),
     'getAllUserProfiles' : IDL.Func(
         [],
         [IDL.Vec(IDL.Tuple(IDL.Principal, UserProfile))],
@@ -274,6 +303,11 @@ export const idlFactory = ({ IDL }) => {
     'getGlobalChatFeed' : IDL.Func([], [IDL.Vec(ChatMessage)], ['query']),
     'getGlobalStats' : IDL.Func([], [GlobalStats], ['query']),
     'getTopMoments' : IDL.Func([], [IDL.Vec(WeeklyMoment)], ['query']),
+    'getUserConnections' : IDL.Func(
+        [IDL.Principal],
+        [IDL.Vec(IDL.Text)],
+        ['query'],
+      ),
     'getUserProfile' : IDL.Func(
         [IDL.Principal],
         [IDL.Opt(UserProfile)],

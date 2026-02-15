@@ -1,93 +1,57 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Polish judging flow: Home quote, Circles entry, safer Start Chat, and seeded Global Chat",
+  "title": "Version 11 shareable export folder (frontend-only tooling + README)",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Add a bottom-of-Home motivational quote section after the existing “Your Journey Continues” section without impacting layout.",
+      "summary": "Add a clearly named Version 11 export folder and provide a repeatable way to generate a full snapshot (excluding build/dependency artifacts) while preserving original relative paths.",
       "acceptanceCriteria": [
-        "Home page displays a motivational quote section at the bottom of the page.",
-        "The quote text is English and does not overlap or break the existing Home page sections on mobile and desktop."
+        "A new folder exists at a clearly named path (e.g., export/version11/ or share/version11/)",
+        "The folder includes copies of all current project source/config files referenced in the repo (including backend/main.mo, backend/migration.mo, frontend/**, and project_state.json) while preserving the original relative paths",
+        "The export folder does not include build artifacts or dependency folders (e.g., node_modules, dist, .dfx, .mops, .git)"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/HomePage.tsx",
-          "operation": "modify",
-          "description": "Add a new, responsive motivational quote section (English) immediately after the existing “Your Journey Continues” card, ensuring spacing and typography match current layout and do not affect other sections."
+          "path": "frontend/share/version11/.gitkeep",
+          "operation": "create",
+          "description": "Create the clearly named export folder anchor at frontend/share/version11/ so it exists in-repo even before generating the snapshot."
+        },
+        {
+          "path": "frontend/scripts/export-version11.ts",
+          "operation": "create",
+          "description": "Add a Node/TS script that generates/refreshes the export snapshot into frontend/share/version11/ by copying the repository files while preserving relative paths and excluding build artifacts/dependency folders (node_modules, dist, .dfx, .mops, .git and similar). Ensure the script includes copies of backend/main.mo, backend/migration.mo, frontend/**, and project_state.json."
+        },
+        {
+          "path": "frontend/scripts/export-version11-config.ts",
+          "operation": "create",
+          "description": "Add a small config module used by the export script defining inclusion roots and exclusion patterns to ensure build artifacts/dependency folders are not exported."
+        },
+        {
+          "path": "frontend/share/version11/.exportignore",
+          "operation": "create",
+          "description": "Add an export ignore file documenting the excluded folders/files (node_modules, dist, .dfx, .mops, .git, etc.) to keep the snapshot clean and shareable."
         }
       ]
     },
     {
       "id": "REQ-2",
-      "summary": "Make each circle’s primary action navigate into an in-app circle detail view that shows circle info and supports returning to the circles list, without backend changes.",
+      "summary": "Include a single English README in the Version 11 export folder with WhatsApp-safe sharing instructions and ZIP compression steps for common OSes.",
       "acceptanceCriteria": [
-        "Clicking \"View Circle\" for a listed circle takes the user to a circle view screen within the app.",
-        "The circle view screen shows the circle name/topic and provides an obvious way to return to the Circles list.",
-        "No runtime errors occur when entering a circle."
+        "README is present inside the export folder",
+        "README text is in English and includes explicit steps for WhatsApp code-safe sharing (monospace/code block guidance)",
+        "README includes basic ZIP instructions for Windows and macOS (and optionally Linux) using built-in tools"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/data/mockCircles.ts",
+          "path": "frontend/share/version11/README.md",
           "operation": "create",
-          "description": "Create a shared mock circles data module (ids, name, topic, members/maxMembers) that can be reused by the Circles list and the circle detail screen (frontend-only; no backend dependency)."
+          "description": "Create README.md inside frontend/share/version11/ with English instructions for sharing without formatting changes (explicit WhatsApp-safe guidance such as sending as a document/file, or wrapping in code blocks/monospace when copying text) and steps to compress the folder into a ZIP on Windows and macOS (optionally Linux) using built-in tools. Reference running the frontend/scripts/export-version11.ts script to (re)generate the snapshot before zipping."
         },
         {
-          "path": "frontend/src/pages/CirclesPage.tsx",
+          "path": "frontend/scripts/export-version11.ts",
           "operation": "modify",
-          "description": "Replace the no-op “View Circle” button behavior to navigate to an in-app circle detail route (e.g., /circles/$circleId) using the circle id from the shared mock circles module."
-        },
-        {
-          "path": "frontend/src/pages/CircleDetailPage.tsx",
-          "operation": "create",
-          "description": "Implement a circle detail screen that reads the circle id from the route params, looks up the circle in the shared mock circles data, displays circle name/topic (and optional member counts), and provides an obvious back action to return to /circles. Handle unknown ids gracefully with an English message and a back link."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register and wire a new protected route for the circle detail screen (e.g., /circles/$circleId) so it is reachable via UI navigation from the Circles page."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Prevent runtime crashes when starting a chat from Connections by safely handling invalid/placeholder partner identifiers and ensuring ChatPage never throws on invalid Principal parsing.",
-      "acceptanceCriteria": [
-        "Clicking \"Start Chat\" on the Connections page does not crash the app or show an uncaught error in the UI/console.",
-        "If a partner identifier cannot be parsed into a Principal, the app shows a user-friendly message and routes to a safe screen state (e.g., Chat page with \"No Chat Selected\" state or similar) without throwing.",
-        "When a valid partner Principal is present in the URL, ChatPage continues to load conversation messages as before."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/ChatPage.tsx",
-          "operation": "modify",
-          "description": "Guard Principal parsing by wrapping Principal.fromText in a try/catch and treating invalid partner values as null; render a safe, user-friendly state (English) instead of throwing, and avoid calling conversation queries with invalid partner values."
-        },
-        {
-          "path": "frontend/src/pages/MatchingPage.tsx",
-          "operation": "modify",
-          "description": "Harden the “Start Chat” navigation so it does not pass placeholder/invalid partner identifiers that can crash ChatPage. If the connection id is not a valid Principal text, navigate to /chat without a partner (safe state) and show an English, user-friendly notification in-page (or via an existing banner mechanism) explaining that the chat cannot be opened yet."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Seed Global Chat with realistic initial messages for empty/fresh states and remove “be the first” empty-state wording; keep all user-facing text in English.",
-      "acceptanceCriteria": [
-        "On a fresh state where no global chat messages exist, the Global Chat feed displays a non-empty list of seeded messages.",
-        "The Global Chat page no longer displays the empty-state text \"No messages yet. Be the first to share!\" and does not include similar \"you are the first\" wording anywhere in the Global Chat UI.",
-        "Seeded messages look like realistic short thoughts/experiences and include perspectives that match the existing perspective options."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/data/globalChatSeed.ts",
-          "operation": "create",
-          "description": "Create a frontend-only seed dataset of realistic short global chat messages, each tagged with one of the existing Global Chat perspectives; include multiple entries across perspectives for a non-empty initial feed."
-        },
-        {
-          "path": "frontend/src/pages/GlobalChatPage.tsx",
-          "operation": "modify",
-          "description": "Update Global Chat feed rendering to display seeded messages when the backend feed returns empty (fresh/empty state). Remove/replace the current empty-state copy containing “Be the first to share!” with neutral English copy, ensuring no “you are the first” phrasing appears anywhere in the Global Chat UI."
+          "description": "Ensure the export script also writes/updates the README.md in the export folder (or verifies it exists) so the exported snapshot always contains the required sharing and ZIP instructions."
         }
       ]
     }

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { UserProfile, WeeklyMoment, DailyChallenge, WeeklyChallenge, GlobalStats, ChatMessage, Connection } from '../backend';
+import { useInternetIdentity } from './useInternetIdentity';
+import type { UserProfile, WeeklyMoment, DailyChallenge, WeeklyChallenge, GlobalStats, ChatMessage, Connection, MemberSummary } from '../backend';
 import { Principal } from '@dfinity/principal';
 
 export function useGetCallerUserProfile() {
@@ -35,6 +36,7 @@ export function useSaveCallerUserProfile() {
     onSuccess: (_, profile) => {
       queryClient.setQueryData(['currentUserProfile'], profile);
       queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['allMembers'] });
     },
   });
 }
@@ -226,6 +228,19 @@ export function useGetAvailableConnections() {
   });
 }
 
+export function useGetAllMembers() {
+  const { actor, isFetching: actorFetching } = useActor();
+
+  return useQuery<MemberSummary[]>({
+    queryKey: ['allMembers'],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getAllMembers();
+    },
+    enabled: !!actor && !actorFetching,
+  });
+}
+
 export function useGetAllUserProfiles() {
   const { actor, isFetching: actorFetching } = useActor();
 
@@ -236,5 +251,39 @@ export function useGetAllUserProfiles() {
       return actor.getAllUserProfiles();
     },
     enabled: !!actor && !actorFetching,
+  });
+}
+
+// New: Get caller's connections
+export function useGetMyConnections() {
+  const { actor, isFetching: actorFetching } = useActor();
+  const { identity } = useInternetIdentity();
+
+  return useQuery<string[]>({
+    queryKey: ['myConnections'],
+    queryFn: async () => {
+      if (!actor || !identity) return [];
+      const principal = identity.getPrincipal();
+      return actor.getUserConnections(principal);
+    },
+    enabled: !!actor && !actorFetching && !!identity,
+  });
+}
+
+// New: Connect to a member
+export function useConnectToMember() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (memberPrincipalText: string) => {
+      if (!actor) throw new Error('Actor not available');
+      const principal = Principal.fromText(memberPrincipalText);
+      return actor.addConnection(principal);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['myConnections'] });
+      queryClient.invalidateQueries({ queryKey: ['allMembers'] });
+    },
   });
 }

@@ -34,6 +34,12 @@ export interface GlobalStats {
   'trendingMbtiTypes' : Array<string>,
   'emotionalHeatmap' : Array<string>,
 }
+export interface MemberListing { 'principal' : string, 'profile' : UserProfile }
+export interface MemberSummary {
+  'principal' : string,
+  'displayName' : string,
+  'avatar' : string,
+}
 export type Time = bigint;
 export interface UserProfile {
   'perspectives' : Array<string>,
@@ -88,6 +94,7 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'addConnection' : ActorMethod<[Principal], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'completeDailyChallenge' : ActorMethod<[bigint], undefined>,
   'completeWeeklyChallenge' : ActorMethod<[bigint], undefined>,
@@ -96,6 +103,8 @@ export interface _SERVICE {
     [],
     { 'totalImpacts' : bigint, 'totalUsers' : bigint, 'totalMoments' : bigint }
   >,
+  'getAllMemberListings' : ActorMethod<[], Array<MemberListing>>,
+  'getAllMembers' : ActorMethod<[], Array<MemberSummary>>,
   'getAllUserProfiles' : ActorMethod<[], Array<[Principal, UserProfile]>>,
   'getAvailableConnections' : ActorMethod<[], Array<Connection>>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
@@ -105,6 +114,7 @@ export interface _SERVICE {
   'getGlobalChatFeed' : ActorMethod<[], Array<ChatMessage>>,
   'getGlobalStats' : ActorMethod<[], GlobalStats>,
   'getTopMoments' : ActorMethod<[], Array<WeeklyMoment>>,
+  'getUserConnections' : ActorMethod<[Principal], Array<string>>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'getWeeklyChallenges' : ActorMethod<[], Array<WeeklyChallenge>>,
   'incrementImpact' : ActorMethod<[bigint], undefined>,

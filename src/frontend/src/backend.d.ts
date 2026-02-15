@@ -7,12 +7,33 @@ export interface None {
     __kind__: "None";
 }
 export type Option<T> = Some<T> | None;
-export interface GlobalStats {
-    activeUsers: bigint;
-    trendingMbtiTypes: Array<string>;
-    emotionalHeatmap: Array<string>;
+export interface UserProfile {
+    perspectives: Array<string>;
+    displayName: string;
+    interests: Array<string>;
+    mbtiType?: string;
+    comfortMode: boolean;
+    communicationStyle: string;
+    location: string;
+    avatar: string;
+}
+export interface WeeklyMoment {
+    impactCount: bigint;
+    content: string;
+    user: Principal;
+    timestamp: Time;
+    category: string;
 }
 export type Time = bigint;
+export interface MemberSummary {
+    principal: string;
+    displayName: string;
+    avatar: string;
+}
+export interface MemberListing {
+    principal: string;
+    profile: UserProfile;
+}
 export interface DailyChallenge {
     id: bigint;
     streak: bigint;
@@ -37,22 +58,10 @@ export interface Connection {
     personalityType: string;
     avatar: string;
 }
-export interface UserProfile {
-    perspectives: Array<string>;
-    displayName: string;
-    interests: Array<string>;
-    mbtiType?: string;
-    comfortMode: boolean;
-    communicationStyle: string;
-    location: string;
-    avatar: string;
-}
-export interface WeeklyMoment {
-    impactCount: bigint;
-    content: string;
-    user: Principal;
-    timestamp: Time;
-    category: string;
+export interface GlobalStats {
+    activeUsers: bigint;
+    trendingMbtiTypes: Array<string>;
+    emotionalHeatmap: Array<string>;
 }
 export enum UserRole {
     admin = "admin",
@@ -60,6 +69,7 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
+    addConnection(otherUser: Principal): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     completeDailyChallenge(challengeId: bigint): Promise<void>;
     completeWeeklyChallenge(challengeId: bigint): Promise<void>;
@@ -69,6 +79,8 @@ export interface backendInterface {
         totalUsers: bigint;
         totalMoments: bigint;
     }>;
+    getAllMemberListings(): Promise<Array<MemberListing>>;
+    getAllMembers(): Promise<Array<MemberSummary>>;
     getAllUserProfiles(): Promise<Array<[Principal, UserProfile]>>;
     getAvailableConnections(): Promise<Array<Connection>>;
     getCallerUserProfile(): Promise<UserProfile | null>;
@@ -78,6 +90,7 @@ export interface backendInterface {
     getGlobalChatFeed(): Promise<Array<ChatMessage>>;
     getGlobalStats(): Promise<GlobalStats>;
     getTopMoments(): Promise<Array<WeeklyMoment>>;
+    getUserConnections(user: Principal): Promise<Array<string>>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     getWeeklyChallenges(): Promise<Array<WeeklyChallenge>>;
     incrementImpact(momentId: bigint): Promise<void>;

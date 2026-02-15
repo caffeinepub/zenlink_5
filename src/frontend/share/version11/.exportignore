@@ -1,0 +1,22 @@
+# Export Ignore File
+# These patterns are excluded from the Version 11 export
+
+node_modules
+dist
+.dfx
+.mops
+.git
+.gitignore
+target
+build
+.cache
+.turbo
+.next
+.vercel
+coverage
+.nyc_output
+*.log
+.DS_Store
+Thumbs.db
+
+# This file is for documentation only

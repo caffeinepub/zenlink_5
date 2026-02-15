@@ -1,102 +1,56 @@
 {
   "kind": "build_request",
-  "title": "Polish judging flow: home quote, circles entry, fix connections chat error, and seed global chat",
-  "priority": "normal",
+  "title": "Create a shareable Version 11 export folder containing all project files",
+  "priority": "high",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "Add a motivational quote section at the end of the Home page (after the existing \"Your Journey Continues\" section). The quote must be in English and render consistently without affecting existing layout.",
-      "target": "frontend",
+      "text": "Add a new repository folder that contains a complete, shareable snapshot of the Version 11 project files (backend + frontend + project metadata) in the same directory structure as the app.",
+      "target": "both",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-1"
         ],
         "quotes": [
-          "Lastly at the end of the home screen give any motivational quote"
+          "Can you generate a folder adding all these files"
         ]
       },
       "acceptanceCriteria": [
-        "Home page displays a motivational quote section at the bottom of the page.",
-        "The quote text is English and does not overlap or break the existing Home page sections on mobile and desktop."
+        "A new folder exists at a clearly named path (e.g., export/version11/ or share/version11/)",
+        "The folder includes copies of all current project source/config files referenced in the repo (including backend/main.mo, backend/migration.mo, frontend/**, and project_state.json) while preserving the original relative paths",
+        "The export folder does not include build artifacts or dependency folders (e.g., node_modules, dist, .dfx, .mops, .git)"
       ]
     },
     {
       "id": "REQ-2",
-      "text": "Enable users to enter a circle from the Circles page by making each circle’s primary action navigate to an in-app circle view (e.g., a circle detail screen) rather than a no-op button. The circle view must be accessible via UI and must not require backend changes.",
-      "target": "frontend",
+      "text": "Include a single README in the export folder with English instructions for how to share the exported project without formatting changes (including WhatsApp-safe copying guidance) and how to compress the folder into a ZIP on common operating systems.",
+      "target": "unknown",
       "source": {
         "messageIds": [
-          "msg-6"
+          "msg-1"
         ],
         "quotes": [
-          "allow access for the user to enter into the circle"
+          "It should not change when I share it through WhatsApp.",
+          "Can you generate a folder adding all these files"
         ]
       },
       "acceptanceCriteria": [
-        "Clicking \"View Circle\" for a listed circle takes the user to a circle view screen within the app.",
-        "The circle view screen shows the circle name/topic and provides an obvious way to return to the Circles list.",
-        "No runtime errors occur when entering a circle."
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "text": "Fix the Connections -> Start Chat flow so pressing \"Start Chat\" never triggers a runtime error. Handle invalid/placeholder partner identifiers safely by preventing crashes in ChatPage and/or ensuring navigation only uses valid partner values.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "don't show an error when we press start a conversation in connections"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Clicking \"Start Chat\" on the Connections page does not crash the app or show an uncaught error in the UI/console.",
-        "If a partner identifier cannot be parsed into a Principal, the app shows a user-friendly message and routes to a safe screen state (e.g., Chat page with \"No Chat Selected\" state or similar) without throwing.",
-        "When a valid partner Principal is present in the URL, ChatPage continues to load conversation messages as before."
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "text": "Seed the Global Chat feed with multiple initial thoughts/experiences so the feed is not empty on a fresh/empty state, and update the empty-state copy to avoid any phrasing implying the user is the first to post (in particular remove \"Be the first to share\"). All user-facing text must be in English.",
-      "target": "both",
-      "source": {
-        "messageIds": [
-          "msg-6"
-        ],
-        "quotes": [
-          "Also add some of the thoughts or experience is in global chat so that they will not find anything suspicious and don't say you are the first one to share a thought or feeling."
-        ]
-      },
-      "acceptanceCriteria": [
-        "On a fresh state where no global chat messages exist, the Global Chat feed displays a non-empty list of seeded messages.",
-        "The Global Chat page no longer displays the empty-state text \"No messages yet. Be the first to share!\" and does not include similar \"you are the first\" wording anywhere in the Global Chat UI.",
-        "Seeded messages look like realistic short thoughts/experiences and include perspectives that match the existing perspective options."
+        "README is present inside the export folder",
+        "README text is in English and includes explicit steps for WhatsApp code-safe sharing (monospace/code block guidance)",
+        "README includes basic ZIP instructions for Windows and macOS (and optionally Linux) using built-in tools"
       ]
     }
   ],
   "constraints": [
-    "Use English for any user-facing text.",
-    "Do not edit files in frontend immutable paths (e.g., frontend/src/hooks/useInternetIdentity.ts(x), frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui).",
-    "Backend must remain a single-actor Motoko canister; keep logic in backend/main.mo; add backend/migration.mo changes only if required for state compatibility."
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or anything in frontend/src/components/ui (compose them instead if needed).",
+    "Respect single-actor backend architecture (all Motoko logic stays in backend/main.mo; only change backend/migration.mo if state upgrades are required)."
   ],
   "nonGoals": [
-    "Implementing real-time chat updates (e.g., websockets).",
-    "Adding third-party authentication providers beyond Internet Identity.",
-    "Building a fully persistent circles backend (circles can remain frontend-only/mocked if needed for the judging flow)."
+    "Implementing new app features (connections, chat changes, UI changes) unrelated to exporting/sharing the existing Version 11 code",
+    "Adding third-party file hosting, cloud storage, or external deployment automation"
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
-  },
-  "userProfileUpdate": {
-    "goalsToAdd": [],
-    "goalsToRemove": [],
-    "preferencesToAdd": [],
-    "preferencesToRemove": [],
-    "miscToAdd": [],
-    "miscToRemove": [],
-    "fieldsToSet": {},
-    "fieldsToDelete": []
   }
 }

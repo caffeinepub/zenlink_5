@@ -1,10 +1,10 @@
+import Array "mo:core/Array";
 import List "mo:core/List";
 import Map "mo:core/Map";
 import Text "mo:core/Text";
 import Time "mo:core/Time";
 import Runtime "mo:core/Runtime";
 import Nat "mo:core/Nat";
-import Array "mo:core/Array";
 import Iter "mo:core/Iter";
 import Set "mo:core/Set";
 import Principal "mo:core/Principal";
@@ -12,11 +12,9 @@ import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
+import Migration "migration";
 
-
-
-// Proper migration with import of migration code in with-clause
-
+(with migration = Migration.run)
 actor {
   include MixinStorage();
 
@@ -84,6 +82,17 @@ actor {
     isAvailable : Bool;
   };
 
+  public type MemberSummary = {
+    principal : Text;
+    displayName : Text;
+    avatar : Text;
+  };
+
+  public type MemberListing = {
+    principal : Text;
+    profile : UserProfile;
+  };
+
   let allowedAvatars : [Text] = ["🐧", "🦄", "🐯", "🦊", "🌈", "🌟"];
 
   func arrayContains(array : [Text], element : Text) : Bool {
@@ -105,7 +114,12 @@ actor {
   let weeklyChallenges = Map.empty<Principal, [WeeklyChallenge]>();
   let dailyChallenges = Map.empty<Principal, [DailyChallenge]>();
   let momentImpacts = Map.empty<Nat, Set.Set<Principal>>();
-  var nextMomentId = 0;
+
+  // Connections state: Maps a userPrincipal to set of connected user Principals
+  let userConnections = Map.empty<Principal, Set.Set<Principal>>();
+
+  // Persistent State (e.g. nextMomentId) should use persistent types instead of vars
+  let nextMomentIdStore = Map.empty<Text, Nat>();
 
   // Chat Feature persistent state
   let globalChatFeed = List.empty<ChatMessage>();
@@ -206,6 +220,31 @@ actor {
     userProfiles.add(caller, profile);
   };
 
+  public query ({ caller }) func getAllMembers() : async [MemberSummary] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can fetch connections");
+    };
+
+    userProfiles.entries().toArray().map(
+      func((principal, profile)) {
+        { principal = principal.toText(); displayName = profile.displayName; avatar = profile.avatar };
+      }
+    );
+  };
+
+  // New: Get Member Listings (for more details, e.g. connections)
+  public query ({ caller }) func getAllMemberListings() : async [MemberListing] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can fetch member listings");
+    };
+
+    userProfiles.entries().toArray().map(
+      func((principal, profile)) {
+        { principal = principal.toText(); profile };
+      }
+    );
+  };
+
   // Weekly Moments
   public shared ({ caller }) func submitWeeklyMoment(content : Text, category : Text) : async () {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
@@ -224,9 +263,18 @@ actor {
           impactCount = 0;
           category;
         };
-        weeklyMoments.add(nextMomentId, moment);
-        momentImpacts.add(nextMomentId, Set.empty<Principal>());
-        nextMomentId += 1;
+        var currentMomentId = 0;
+        // Get or initialize the nextMomentId
+        switch (nextMomentIdStore.get("momentId")) {
+          case (null) { nextMomentIdStore.add("momentId", 1) };
+          case (?id) {
+            currentMomentId := id;
+            nextMomentIdStore.add("momentId", id + 1);
+          };
+        };
+
+        weeklyMoments.add(currentMomentId, moment);
+        momentImpacts.add(currentMomentId, Set.empty<Principal>());
       };
     };
   };
@@ -491,5 +539,58 @@ actor {
       user1.toText() # "|" # user2.toText();
     } else { user2.toText() # "|" # user1.toText() };
   };
-};
 
+  // New: Persistent addConnection logic with proper authorization
+  public shared ({ caller }) func addConnection(otherUser : Principal) : async () {
+    // Verify caller is authenticated user
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can add connections");
+    };
+
+    // Prevent self-connection
+    if (caller == otherUser) {
+      Runtime.trap("Cannot connect to yourself");
+    };
+
+    // Verify target user exists
+    switch (userProfiles.get(otherUser)) {
+      case (null) {
+        Runtime.trap("Target user does not exist");
+      };
+      case (?_profile) {
+        // User exists, proceed with connection
+        let callerConnections = switch (userConnections.get(caller)) {
+          case (null) { Set.empty<Principal>() };
+          case (?connections) { connections };
+        };
+
+        if (callerConnections.contains(otherUser)) {
+          Runtime.trap("Connection already exists");
+        };
+
+        callerConnections.add(otherUser);
+        userConnections.add(caller, callerConnections);
+      };
+    };
+  };
+
+  // New: Get User's Connections with proper authorization
+  public query ({ caller }) func getUserConnections(user : Principal) : async [Text] {
+    // Verify caller is authenticated
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can view connections");
+    };
+
+    // Only allow viewing own connections unless admin
+    if (caller != user and not AccessControl.isAdmin(accessControlState, caller)) {
+      Runtime.trap("Unauthorized: Can only view your own connections unless admin");
+    };
+
+    switch (userConnections.get(user)) {
+      case (null) { [] };
+      case (?connections) {
+        connections.toArray().map(func(principal) { principal.toText() });
+      };
+    };
+  };
+};
